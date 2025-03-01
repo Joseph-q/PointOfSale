@@ -88,7 +88,7 @@ namespace PointOfSale.Auth.Services
 
             var userRole = user.Roles.FirstOrDefault();
             if (userRole == null) return false; // If user does not have a role is not valid
-            if (userRole.Name == "admin") return true; // Admin has all permissions
+            if (userRole.Name == "superadmin") return true; // Admin has all permissions
 
             List<Permission> permissions = await GetPermissionByRoleId(userRole.Id); // Get Permission for that role
 

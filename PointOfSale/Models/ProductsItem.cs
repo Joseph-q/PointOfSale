@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace PointOfSale.Models;
+﻿namespace PointOfSale.Models;
 
 public partial class ProductsItem
 {

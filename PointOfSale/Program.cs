@@ -9,6 +9,7 @@ using PointOfSale.Models;
 using PointOfSale.Permissions;
 using PointOfSale.Permitions;
 using PointOfSale.Roles.Services;
+using PointOfSale.Sales.Products.Services;
 using PointOfSale.Shared.Settings;
 using PointOfSale.Users.Services;
 using System.Reflection;
@@ -48,6 +49,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddScoped<AuthService>();
 

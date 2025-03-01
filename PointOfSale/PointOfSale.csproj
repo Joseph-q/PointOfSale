@@ -26,8 +26,8 @@
     <Folder Include="Models\" />
     <Folder Include="Sales\Purchase\" />
     <Folder Include="Sales\Suplier\" />
-    <Folder Include="Sales\Products\Category\" />
-    <Folder Include="Sales\Products\Promotions\" />
+    <Folder Include="Sales\Category\" />
+    <Folder Include="Sales\Promotions\" />
   </ItemGroup>
 
 </Project>
