@@ -8,6 +8,9 @@ namespace PointOfSale.Sales.Products.Services
     {
         Task<List<GetProductsResponse>> GetResponseProductItemsAsync(GetProductsQueryParams queryParams);
         Task<ProductsItem?> GetProductItemByBarCodeAsync(string barcode);
+
+        Task<GetProductItemResponse?> GetProductItemResponseByBarCodeAsync(string barcode);
+
         Task<int> CreateProductItemAsync(CreateProductItem product);
         Task<int> UpdateProductItemAsync(ProductsItem product);
 

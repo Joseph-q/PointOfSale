@@ -36,7 +36,7 @@ namespace PointOfSale.Sales.Products
         [PermissionPolicy(DefaultActions.Read, DefaultSubjects.Products)]
         public async Task<IActionResult> GetProduct(string barcode)
         {
-            ProductsItem? product = await _productService.GetProductItemByBarCodeAsync(barcode);
+            GetProductItemResponse? product = await _productService.GetProductItemResponseByBarCodeAsync(barcode);
 
             if (product == null)
             {
@@ -55,7 +55,7 @@ namespace PointOfSale.Sales.Products
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductItem product)
         {
             await _productService.CreateProductItemAsync(product);
-            return Ok();
+            return Created();
         }
 
         [HttpPut("{barcode}")]
@@ -107,7 +107,7 @@ namespace PointOfSale.Sales.Products
 
             await _productService.DeleteProductItemAsync(p);
 
-            return Ok();
+            return NoContent();
 
         }
 

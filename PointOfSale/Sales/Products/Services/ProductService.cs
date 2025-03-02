@@ -31,6 +31,22 @@ namespace PointOfSale.Sales.Products.Services
             return _context.ProductsItems.FirstOrDefaultAsync(p => p.Barcode.Equals(barcode));
         }
 
+        public Task<GetProductItemResponse?> GetProductItemResponseByBarCodeAsync(string barcode)
+        {
+            return _context.ProductsItems.Select(p => new GetProductItemResponse
+            {
+                Barcode = p.Barcode,
+                Name = p.Name,
+                Price = p.Price,
+                Stock = p.Stock,
+                Sold = p.Sold,
+                CategoryId = p.CategoryId,
+                SupplierId = p.SupplierId,
+                DateAdded = p.DateAdded,
+                ExpiredDate = p.DateAdded
+            }).FirstOrDefaultAsync(p => p.Barcode.Equals(barcode));
+        }
+
         public Task<List<GetProductsResponse>> GetResponseProductItemsAsync(GetProductsQueryParams queryParams)
         {
             var chain = _context.ProductsItems.AsQueryable();

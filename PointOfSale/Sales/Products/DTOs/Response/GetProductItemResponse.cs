@@ -6,19 +6,20 @@
 
         public string Name { get; set; } = null!;
 
-        public required double Price { get; set; }
+        public double? Price { get; set; } = 0;
 
-        public int Stock { get; set; } = 0;
+        public int? Stock { get; set; } = 0;
 
-        public int Sold { get; set; } = 0;
+        public int? Sold { get; set; } = 0;
 
-        public string? Category { get; set; } = "No category";
+        public int? CategoryId { get; set; }
 
-        public string? Supplier { get; set; } = "No supplier";
+        public int? SupplierId { get; set; }
 
         public DateOnly? ExpiredDate { get; set; }
 
-        public DateOnly DateAdded { get; set; }
+        public DateOnly? DateAdded { get; set; }
+
 
     }
 }
