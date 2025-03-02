@@ -1,4 +1,7 @@
-﻿namespace PointOfSale.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace PointOfSale.Models;
 
 public partial class User
 {

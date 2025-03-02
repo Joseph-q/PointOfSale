@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using PointOfSale.Models;
 using PointOfSale.Sales.Products.DTOs.Request;
+using PointOfSale.Sales.Products.DTOs.Response;
 
 namespace PointOfSale.Sales.Products.Services
 {
@@ -30,28 +31,28 @@ namespace PointOfSale.Sales.Products.Services
             return _context.ProductsItems.FirstOrDefaultAsync(p => p.Barcode.Equals(barcode));
         }
 
-        public Task<List<ProductsItem>> GetProductItemsAsync(GetProductsQueryParams queryParams)
+        public Task<List<GetProductsResponse>> GetResponseProductItemsAsync(GetProductsQueryParams queryParams)
         {
             var chain = _context.ProductsItems.AsQueryable();
 
             if (queryParams != null)
             {
-                if (!string.IsNullOrEmpty(queryParams.Category))
+                if (queryParams.CategoryId != null && queryParams.CategoryId > 0)
                 {
-                    chain = chain.Where(p => p.Category.Id.Equals(queryParams.Category));
+                    chain = chain.Where(p => p.Category.Id.Equals(queryParams.CategoryId));
                 }
 
-                if (!string.IsNullOrEmpty(queryParams.Price))
+                if (queryParams.Price != null)
                 {
                     chain = chain.Where(p => p.Price.Equals(queryParams.Price));
                 }
 
-                if (!string.IsNullOrEmpty(queryParams.Supplier))
+                if (queryParams.SupplierId != null && queryParams.SupplierId > 0)
                 {
-                    chain = chain.Where(p => p.SupplierId.Equals(queryParams.Supplier));
+                    chain = chain.Where(p => p.SupplierId.Equals(queryParams.SupplierId));
                 }
 
-                if (!string.IsNullOrEmpty(queryParams.Purchase))
+                if (queryParams.PurchaseId != null && queryParams.PurchaseId > 0)
                 {
 
                     // TODO: this function is not implemented
@@ -77,7 +78,7 @@ namespace PointOfSale.Sales.Products.Services
                 }
             }
 
-            return chain.ToListAsync();
+            return chain.Select(p => new GetProductsResponse { Barcode = p.Barcode, Price = p.Price, Name = p.Name, Stock = p.Stock ?? 0 }).ToListAsync();
         }
 
         public Task<int> UpdateProductItemAsync(ProductsItem product)

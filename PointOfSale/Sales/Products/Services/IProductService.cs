@@ -1,11 +1,12 @@
 ﻿using PointOfSale.Models;
 using PointOfSale.Sales.Products.DTOs.Request;
+using PointOfSale.Sales.Products.DTOs.Response;
 
 namespace PointOfSale.Sales.Products.Services
 {
     public interface IProductService
     {
-        Task<List<ProductsItem>> GetProductItemsAsync(GetProductsQueryParams queryParams);
+        Task<List<GetProductsResponse>> GetResponseProductItemsAsync(GetProductsQueryParams queryParams);
         Task<ProductsItem?> GetProductItemByBarCodeAsync(string barcode);
         Task<int> CreateProductItemAsync(CreateProductItem product);
         Task<int> UpdateProductItemAsync(ProductsItem product);

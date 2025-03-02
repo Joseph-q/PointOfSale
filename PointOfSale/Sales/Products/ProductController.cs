@@ -1,17 +1,17 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PointOfSale.Auth.Atributtes;
 using PointOfSale.Auth.Constants;
 using PointOfSale.Models;
 using PointOfSale.Sales.Products.DTOs.Request;
+using PointOfSale.Sales.Products.DTOs.Response;
 using PointOfSale.Sales.Products.Services;
 using PointOfSale.Shared.DTOs.Responses;
 
 namespace PointOfSale.Sales.Products
 {
-    [Authorize]
-    [PermissionAuthorize]
+    //[Authorize]
+    //[PermissionAuthorize]
     [ApiController]
     [Route("api/product")]
     [Produces("application/json")]
@@ -26,7 +26,7 @@ namespace PointOfSale.Sales.Products
         [PermissionPolicy(DefaultActions.Read, DefaultSubjects.Products)]
         public async Task<IActionResult> GetProducts([FromQuery] GetProductsQueryParams queryParams)
         {
-            List<ProductsItem> products = await _productService.GetProductItemsAsync(queryParams);
+            List<GetProductsResponse> products = await _productService.GetResponseProductItemsAsync(queryParams);
 
             SuccessResponseDto response = new() { Data = products };
             return Ok(response);
@@ -43,7 +43,9 @@ namespace PointOfSale.Sales.Products
                 return NotFound(new ErrorResponseDto { Title = "Product not found" });
             }
 
-            SuccessResponseDto response = new() { Data = product };
+            GetProductItemResponse res = _mapper.Map<GetProductItemResponse>(product);
+
+            SuccessResponseDto response = new() { Data = res };
             return Ok(response);
         }
 
@@ -60,14 +62,30 @@ namespace PointOfSale.Sales.Products
         [PermissionPolicy(DefaultActions.Update, DefaultSubjects.Products)]
         public async Task<IActionResult> UpdateProduct(string barcode, [FromBody] UpdateProductItem product)
         {
-            ProductsItem? p = await _productService.GetProductItemByBarCodeAsync(barcode);
+            ProductsItem? p;
 
-            if (p == null)
+            if (product.Barcode != null)
             {
-                return NotFound("Product not found");
+                p = await _productService.GetProductItemByBarCodeAsync(product.Barcode);
+
+                if (p != null)
+                {
+                    return BadRequest("Product already exist");
+                }
+
+            }
+            else
+            {
+                p = await _productService.GetProductItemByBarCodeAsync(barcode);
+
+                if (p == null)
+                {
+                    return NotFound("Product not found");
+                }
             }
 
-            _mapper.Map<ProductsItem>(p);
+
+            p = _mapper.Map<ProductsItem>(p);
 
             await _productService.UpdateProductItemAsync(p);
 

@@ -2,6 +2,8 @@
 using PointOfSale.Models;
 using PointOfSale.Roles.Controllers.DTOs.Request;
 using PointOfSale.Roles.Controllers.DTOs.Response;
+using PointOfSale.Sales.Products.DTOs.Request;
+using PointOfSale.Sales.Products.DTOs.Response;
 using PointOfSale.Users.Controllers.DTOs.Request;
 using PointOfSale.Users.Controllers.DTOs.Responses;
 
@@ -40,6 +42,18 @@ namespace PointOfSale
                 .ForMember(d => d.Description, o => o.MapFrom((s, d) => s.Description ?? d.Description));
 
             CreateMap<Role, RoleDto>();
+
+
+            //Products Mapping
+            CreateMap<CreateProductItem, ProductsItem>();
+            CreateMap<UpdateProductItem, ProductsItem>()
+                .ForMember(d => d.Name, o => o.MapFrom((s, d) => s.Name ?? d.Name)) // If the name in Update Product item is null, retun original name
+                .ForMember(d => d.Barcode, o => o.MapFrom((s, d) => s.Barcode ?? s.Barcode))
+                .ForMember(d => d.Price, o => o.MapFrom((s, d) => s.Price ?? s.Price))
+                .ForMember(d => d.Stock, o => o.MapFrom((s, d) => d.Stock + s.Stock)) // Stock change add if stock
+                ;
+            CreateMap<ProductsItem, GetProductItemResponse>();
+
 
 
         }

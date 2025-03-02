@@ -19,8 +19,8 @@ public partial class CorteDeCajaContext : DbContext
         {
             Console.WriteLine("Error creando modelos en la base de datos", ex);
         }
-    }
 
+    }
 
     public virtual DbSet<Permission> Permissions { get; set; }
 
@@ -49,12 +49,13 @@ public partial class CorteDeCajaContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Action)
-                .HasMaxLength(255)
+                .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("action");
             entity.Property(e => e.Condition).HasColumnName("condition");
+            entity.Property(e => e.Inverted).HasColumnName("inverted");
             entity.Property(e => e.Subject)
-                .HasMaxLength(255)
+                .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("subject");
         });
@@ -77,6 +78,8 @@ public partial class CorteDeCajaContext : DbContext
             entity.HasKey(e => e.Barcode).HasName("PK__products__C16E36F997EF3F60");
 
             entity.ToTable("products_items");
+
+            entity.HasIndex(e => e.CategoryId, "IX_products_items_category_id");
 
             entity.Property(e => e.Barcode)
                 .HasMaxLength(50)
@@ -104,6 +107,8 @@ public partial class CorteDeCajaContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__promotio__3213E83FB62F3429");
 
             entity.ToTable("promotions");
+
+            entity.HasIndex(e => e.ProductBarcode, "IX_promotions_product_barcode");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Active).HasColumnName("active");
@@ -133,6 +138,8 @@ public partial class CorteDeCajaContext : DbContext
 
             entity.ToTable("purchases");
 
+            entity.HasIndex(e => e.UserId, "IX_purchases_user_id");
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Date).HasColumnName("date");
             entity.Property(e => e.Time).HasColumnName("time");
@@ -149,6 +156,10 @@ public partial class CorteDeCajaContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__purchase__3213E83FBB4C3768");
 
             entity.ToTable("purchase_detail");
+
+            entity.HasIndex(e => e.ProductBarcode, "IX_purchase_detail_product_barcode");
+
+            entity.HasIndex(e => e.PurchaseId, "IX_purchase_detail_purchase_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.ProductBarcode)
@@ -202,6 +213,7 @@ public partial class CorteDeCajaContext : DbContext
                     {
                         j.HasKey("RoleId", "PermissionId").HasName("PK__role_per__C85A5463A98F7421");
                         j.ToTable("role_permissions");
+                        j.HasIndex(new[] { "PermissionId" }, "IX_role_permissions_permission_id");
                         j.IndexerProperty<int>("RoleId").HasColumnName("role_id");
                         j.IndexerProperty<int>("PermissionId").HasColumnName("permission_id");
                     });
@@ -211,7 +223,7 @@ public partial class CorteDeCajaContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__users__3213E83F13EE8B56");
 
-            entity.ToTable("users", tb => tb.HasTrigger("trg_instead_of_user_delete"));
+            entity.ToTable("users");
 
             entity.HasIndex(e => e.Username, "UQ__users__F3DBC572E517D1B8").IsUnique();
 
@@ -244,6 +256,7 @@ public partial class CorteDeCajaContext : DbContext
                     {
                         j.HasKey("UserId", "RoleId").HasName("PK__user_rol__6EDEA1532E3B49C1");
                         j.ToTable("user_roles");
+                        j.HasIndex(new[] { "RoleId" }, "IX_user_roles_role_id");
                         j.IndexerProperty<int>("UserId").HasColumnName("user_id");
                         j.IndexerProperty<int>("RoleId").HasColumnName("role_id");
                     });

@@ -2,11 +2,9 @@
 {
     public record GetProductsResponse
     {
-        public string Name { get; set; }
-        public string Category { get; set; }
-        public string Supplier { get; set; }
-        public string Purchase { get; set; }
-        public decimal Price { get; set; }
-        public int Stock { get; set; }
+        public string Barcode { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        public double Price { get; set; } = 0;
+        public int Stock { get; set; } = 0;
     }
 }

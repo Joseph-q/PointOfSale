@@ -1,4 +1,7 @@
-﻿namespace PointOfSale.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace PointOfSale.Models;
 
 public partial class ProductsItem
 {
@@ -8,13 +11,13 @@ public partial class ProductsItem
 
     public int? SupplierId { get; set; }
 
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     public DateOnly? ExpiredDate { get; set; }
 
     public DateOnly? DateAdded { get; set; }
 
-    public double? Price { get; set; }
+    public double Price { get; set; }
 
     public int? Stock { get; set; }
 

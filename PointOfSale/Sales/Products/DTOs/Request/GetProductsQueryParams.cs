@@ -4,28 +4,28 @@ namespace PointOfSale.Sales.Products.DTOs.Request
 {
     public record GetProductsQueryParams
     {
-        [StringLength(100, ErrorMessage = "Category must be less than 100 characters.")]
-        public string? Category { get; set; }
+        [Range(1, int.MaxValue)]
+        public int? CategoryId { get; set; }
 
-        [StringLength(100, ErrorMessage = "Supplier must be less than 100 characters.")]
-        public string? Supplier { get; set; }
+        [Range(1, int.MaxValue)]
+        public int? SupplierId { get; set; }
 
-        [StringLength(100, ErrorMessage = "Purchase must be less than 100 characters.")]
-        public string? Purchase { get; set; }
+        [Range(1, int.MaxValue)]
+        public int? PurchaseId { get; set; }
 
-        [RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Price must be a valid number with up to two decimal places.")]
-        public string? Price { get; set; }
+        [Range(0.01, double.MaxValue)]
+        public double? Price { get; set; }
 
-        [StringLength(50, ErrorMessage = "OrderBy must be less than 50 characters.")]
+        [MaxLength(20, ErrorMessage = "OrderBy must be less than 20 characters.")]
         public string? OrderBy { get; set; }
 
         [RegularExpression(@"^(asc|desc)$", ErrorMessage = "OrderDirection must be 'asc' or 'desc'.")]
         public string? OrderDirection { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Page must be greater than 0.")]
+        [Range(1, 200, ErrorMessage = "Page must be greater between 1 and 200")]
         public int? Page { get; set; } = 1;
 
-        [Range(1, int.MaxValue, ErrorMessage = "Page must be greater than 0.")]
+        [Range(5, 1000, ErrorMessage = "Page must be between 5 an 1,000")]
         public int? Limit { get; set; } = 20;
     }
 

@@ -13,5 +13,7 @@ public partial class Permission
 
     public string? Condition { get; set; }
 
+    public bool? Inverted { get; set; }
+
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 }
