@@ -38,7 +38,6 @@ public partial class CorteDeCajaContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Permission>(entity =>
@@ -64,13 +63,21 @@ public partial class CorteDeCajaContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__product___3213E83FD5236A47");
 
-            entity.ToTable("product_category");
+            entity.ToTable("product_category", tb => tb.HasTrigger("trg_product_category_UpdateTimestamp"));
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("name");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
         });
 
         modelBuilder.Entity<ProductsItem>(entity =>

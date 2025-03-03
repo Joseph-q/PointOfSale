@@ -9,5 +9,9 @@ public partial class ProductCategory
 
     public string? Name { get; set; }
 
+    public DateTime? CreatedAt { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
+
     public virtual ICollection<ProductsItem> ProductsItems { get; set; } = new List<ProductsItem>();
 }

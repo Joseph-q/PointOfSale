@@ -47,6 +47,10 @@ namespace PointOfSale.Sales.Products.Services
             }).FirstOrDefaultAsync(p => p.Barcode.Equals(barcode));
         }
 
+        public Task<List<ProductsItem>> GetProductsItemsByIDsAsync(string[] productsBarcode) => _context.ProductsItems.Where(p => productsBarcode.Contains(p.Barcode)).ToListAsync();
+        public Task<List<ProductsItem>> GetProductsItemsByIDsAsync(string[] productsBarcode, CancellationToken cancellationToken) => _context.ProductsItems.Where(p => productsBarcode.Contains(p.Barcode)).ToListAsync(cancellationToken);
+
+
         public Task<List<GetProductsResponse>> GetResponseProductItemsAsync(GetProductsQueryParams queryParams)
         {
             var chain = _context.ProductsItems.AsQueryable();
