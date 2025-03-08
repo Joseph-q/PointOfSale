@@ -1,8 +1,10 @@
-﻿namespace PointOfSale.Sales.Category.DTOs.Request
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PointOfSale.Sales.Category.DTOs.Request
 {
     public class CreateUpdateCategoryRequest
     {
-        public int Id { get; set; }
-        public int Name { get; set; }
+        [Required]
+        public String Name { get; set; } = null!;
     }
 }

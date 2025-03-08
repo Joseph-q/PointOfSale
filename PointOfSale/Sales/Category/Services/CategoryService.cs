@@ -26,24 +26,94 @@ namespace PointOfSale.Sales.Category.Services
             await _context.SaveChangesAsync();
         }
 
-        public Task CreateCategoryAsync(CreateUpdateCategoryRequest createUpdate)
+        public Task CreateCategoryAsync(ProductCategory createUpdate)
         {
-            throw new NotImplementedException();
+            _context.Add(createUpdate);
+            return _context.SaveChangesAsync();
         }
 
-        public Task DeleteCategoryAsync(ProductCategory category)
+        public async Task DeleteCategoryAsync(ProductCategory category)
         {
-            throw new NotImplementedException();
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                await _context.ProductsItems
+                      .Where(p => p.CategoryId == category.Id)
+                      .ExecuteUpdateAsync(p => p.SetProperty(x => x.CategoryId, (int?)null));
+
+
+                _context.ProductCategories.Remove(category);
+
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+            finally
+            {
+                transaction.Dispose();
+            }
         }
 
-        public Task DeleteCategoryWithProductsAsync(ProductCategory category)
+        public async Task DeleteCategoryWithProductsAsync(ProductCategory category)
         {
-            throw new NotImplementedException();
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                await _context.ProductsItems
+                      .Where(p => p.CategoryId == category.Id)
+                      .ExecuteDeleteAsync();
+
+
+                _context.ProductCategories.Remove(category);
+
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+            finally
+            {
+                transaction.Dispose();
+            }
+
         }
 
         public Task<List<GetCategoryResponse>> GetCategoriesResponseAsync(GetCategoriesQueryParams queryParams)
         {
-            throw new NotImplementedException();
+            var chain = _context.ProductCategories.AsQueryable();
+
+            int limit = queryParams.Limit;
+            int page = queryParams.Page;
+            string attributeToOrder = queryParams.OrderBy;
+            string? orderDirection = queryParams.OrderDirection;
+
+            if (!string.IsNullOrEmpty(attributeToOrder))
+            {
+                bool descending = orderDirection?.ToLower() == "desc";
+                chain = descending
+                    ? chain.OrderByDescending(c => EF.Property<object>(c, attributeToOrder))
+                    : chain.OrderBy(c => EF.Property<object>(c, attributeToOrder));
+            }
+
+            int skip = (page - 1) * limit;
+            chain = chain.Skip(skip).Take(limit);
+
+            return chain.Select(c => new GetCategoryResponse
+            {
+                Id = c.Id,
+                Name = c.Name,
+            }).ToListAsync();
         }
 
         public Task<ProductCategory?> GetCategoryByIdAsync(int id) => _context.ProductCategories.FirstOrDefaultAsync(c => c.Id.Equals(id));
@@ -51,12 +121,16 @@ namespace PointOfSale.Sales.Category.Services
 
         public Task<GetCategoryResponse?> GetCategoryResponseByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return _context.ProductCategories
+                .Where(p => p.Id.Equals(id))
+                .Select(c => new GetCategoryResponse { Id = c.Id, Name = c.Name })
+                .FirstOrDefaultAsync();
         }
 
         public Task UpdateCategoryAsync(ProductCategory category)
         {
-            throw new NotImplementedException();
+            _context.Update(category);
+            return _context.SaveChangesAsync();
         }
     }
 }

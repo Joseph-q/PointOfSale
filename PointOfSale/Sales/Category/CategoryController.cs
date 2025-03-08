@@ -14,7 +14,7 @@ namespace PointOfSale.Sales.Category
     //[Authorize]
     //[PermissionAuthorize]
     [ApiController]
-    [Route("api/product")]
+    [Route("api/category")]
     [Produces("application/json")]
     [ProducesResponseType(401)]
     [ProducesResponseType(404, Type = typeof(ErrorResponseDto))]
@@ -44,7 +44,7 @@ namespace PointOfSale.Sales.Category
 
         [HttpGet]
         [PermissionPolicy(DefaultActions.Read, DefaultSubjects.Category)]
-        public async Task<IActionResult> GetCategories(GetCategoriesQueryParams queryParams)
+        public async Task<IActionResult> GetCategories([FromQuery] GetCategoriesQueryParams queryParams)
         {
             List<GetCategoryResponse> categoryResponse = await _categoryService.GetCategoriesResponseAsync(queryParams);
 
@@ -55,12 +55,16 @@ namespace PointOfSale.Sales.Category
 
         [HttpPost]
         [PermissionPolicy(DefaultActions.Create, DefaultSubjects.Category)]
-        public async Task<IActionResult> CreateCategory([FromBody] CreateUpdateCategoryRequest createUpdate)
+        public async Task<IActionResult> CreateCategory([FromBody] CreateUpdateCategoryRequest createCategory)
         {
-            await _categoryService.CreateCategoryAsync(createUpdate);
+
+            ProductCategory categoryToCreate = _mapper.Map<ProductCategory>(createCategory);
+
+            await _categoryService.CreateCategoryAsync(categoryToCreate);
 
             return Created();
         }
+
 
         [HttpPut("{id}")]
         [PermissionPolicy(DefaultActions.Update, DefaultSubjects.Category)]
@@ -82,7 +86,7 @@ namespace PointOfSale.Sales.Category
         }
 
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{id}/products")]
         [PermissionPolicy(DefaultActions.Update, DefaultSubjects.Category)]
         [PermissionPolicy(DefaultActions.Update, DefaultSubjects.Products)]
         public async Task<IActionResult> AssingProductToCategory(int id, [FromBody] AssignProductsToCategoryRequest categoryRequest)

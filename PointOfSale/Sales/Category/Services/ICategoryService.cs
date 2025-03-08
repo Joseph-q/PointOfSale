@@ -12,7 +12,7 @@ namespace PointOfSale.Sales.Category.Services
 
         Task<List<GetCategoryResponse>> GetCategoriesResponseAsync(GetCategoriesQueryParams queryParams);
 
-        Task CreateCategoryAsync(CreateUpdateCategoryRequest createUpdate);
+        Task CreateCategoryAsync(ProductCategory createUpdate);
 
         Task UpdateCategoryAsync(ProductCategory category);
 
