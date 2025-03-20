@@ -10,6 +10,10 @@
 
         public string? Description { get; init; }
 
+        public DateTimeOffset? StartAt { get; init; }
+
+        public DateTimeOffset? EndAt { get; init; }
+
         public bool Active { get; init; }
     }
 }

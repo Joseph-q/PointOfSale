@@ -141,5 +141,17 @@ namespace PointOfSale.Sales.Promotions
 
             return NoContent();
         }
+
+        [HttpGet("/api/{barcode}/promotions")]
+        public async Task<IActionResult> GetPromotionsFromProduct(string barcode, [FromQuery] GetPromotionsQueryParams queryParams)
+        {
+
+            List<PromotionResponse> promotions = await _promotionService.GetProductPromotions(barcode, queryParams);
+
+
+            return Ok(promotions);
+        }
+
+
     }
 }

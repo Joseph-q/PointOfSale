@@ -9,9 +9,14 @@ namespace PointOfSale.Sales.Promotions.Services
         Task<PromotionResponse?> GetPromotionResponseById(int id);
         Task<Promotion?> GetPromotionById(int id);
 
+
+        //Responses
         Task<List<PromotionResponse>> GetPromotionsResponse(GetPromotionsQueryParams queryParams);
 
         Task<List<Promotion>> GetPromotions(GetPromotionsQueryParams queryParams);
+
+        Task<List<PromotionResponse>> GetProductPromotions(string barcode, GetPromotionsQueryParams queryParams);
+
 
         Task CreatePromotion(Promotion promotion);
 

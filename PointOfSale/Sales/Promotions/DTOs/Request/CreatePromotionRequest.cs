@@ -2,7 +2,7 @@
 
 namespace PointOfSale.Sales.Promotions.DTOs.Request
 {
-    public record CreatePromotionRequest
+    public record CreatePromotionRequest : IValidatableObject
     {
         [Required]
         [MaxLength(50)]
@@ -15,7 +15,19 @@ namespace PointOfSale.Sales.Promotions.DTOs.Request
         [MaxLength(100)]
         public string? Description { get; init; }
 
+        public DateTimeOffset? StartAt { get; init; }
+
+        public DateTimeOffset? EndAt { get; init; }
+
         [Required]
         public bool Active { get; init; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (EndAt <= StartAt)
+            {
+                yield return new ValidationResult("End date must be greater than the start date.", ["EndAt"]);
+            }
+        }
     }
 }

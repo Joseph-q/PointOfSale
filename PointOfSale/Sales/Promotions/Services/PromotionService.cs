@@ -21,6 +21,33 @@ namespace PointOfSale.Sales.Promotions.Services
             await _context.SaveChangesAsync();
         }
 
+        public Task<List<PromotionResponse>> GetProductPromotions(string barcode, GetPromotionsQueryParams queryParams)
+        {
+            var chain = _context.Promotions.AsQueryable();
+
+
+            bool? active = queryParams.Active;
+
+            if (active != null)
+            {
+                chain = chain.Where(p => p.Active == active);
+            }
+
+
+            return chain.Where(p => p.ProductBarcodes.Any(pr => pr.Barcode.Equals(barcode)))
+            .Select(p => new PromotionResponse
+            {
+                Id = p.Id,
+                Active = p.Active,
+                Name = p.Name,
+                Description = p.Description,
+                EndAt = p.EndAt,
+                PorcentageDiscount = p.PorcentageDiscount,
+                StartAt = p.StartAt
+            })
+            .ToListAsync();
+        }
+
         // Obtener promoción por ID
         public async Task<Promotion?> GetPromotionById(int id)
         {
@@ -40,6 +67,8 @@ namespace PointOfSale.Sales.Promotions.Services
                                      PorcentageDiscount = p.PorcentageDiscount,
                                      Active = p.Active,
                                      Description = p.Description,
+                                     EndAt = p.EndAt,
+                                     StartAt = p.StartAt
                                  })
                                  .FirstOrDefaultAsync();
         }
@@ -73,14 +102,18 @@ namespace PointOfSale.Sales.Promotions.Services
                 chain = chain.Where(p => p.Active.Equals(active));
             }
 
+
+
             return await chain
                 .Select(p => new PromotionResponse
                 {
                     Id = p.Id,
                     Name = p.Name,
+                    Description = p.Description,
                     PorcentageDiscount = p.PorcentageDiscount,
                     Active = p.Active,
-                    Description = p.Description,
+                    EndAt = p.EndAt,
+                    StartAt = p.StartAt
                 })
                 .ToListAsync();
         }

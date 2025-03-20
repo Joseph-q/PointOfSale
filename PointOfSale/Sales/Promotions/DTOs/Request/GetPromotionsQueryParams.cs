@@ -2,6 +2,6 @@
 {
     public record GetPromotionsQueryParams
     {
-        public bool? Active { get; init; }
+        public bool? Active { get; set; }
     }
 }
