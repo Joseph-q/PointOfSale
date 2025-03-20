@@ -7,19 +7,19 @@ namespace PointOfSale.Sales.Products.DTOs.Request
 
         [Required]
         [MaxLength(50)]
-        public required string Barcode { get; set; }
+        public required string Barcode { get; init; }
 
         [Required]
         [MaxLength(50)]
-        public required string Name { get; set; }
+        public required string Name { get; init; }
 
         [Required]
         [Range(0.01, double.MaxValue)]
-        public required double Price { get; set; }
+        public required double Price { get; init; }
 
 
         [Range(1, int.MaxValue)]
-        public int? Stock { get; set; }
+        public int? Stock { get; init; }
 
     }
 }

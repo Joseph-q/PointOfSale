@@ -13,9 +13,7 @@ public partial class Promotion
 
     public string? Description { get; set; }
 
-    public string ProductBarcode { get; set; } = null!;
-
     public bool Active { get; set; }
 
-    public virtual ProductsItem ProductBarcodeNavigation { get; set; } = null!;
+    public virtual ICollection<ProductsItem> ProductBarcodes { get; set; } = new List<ProductsItem>();
 }

@@ -1,15 +1,15 @@
 ﻿namespace PointOfSale.Sales.Promotions.DTOs.Response
 {
-    public class PromotionResponse
+    public record PromotionResponse
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
 
-        public string Name { get; set; } = null!;
+        public string Name { get; init; } = null!;
 
-        public double PorcentageDiscount { get; set; }
+        public double PorcentageDiscount { get; init; }
 
-        public string? Description { get; set; }
+        public string? Description { get; init; }
 
-        public bool Active { get; set; }
+        public bool Active { get; init; }
     }
 }

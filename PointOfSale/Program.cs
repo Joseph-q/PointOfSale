@@ -11,6 +11,7 @@ using PointOfSale.Permitions;
 using PointOfSale.Roles.Services;
 using PointOfSale.Sales.Category.Services;
 using PointOfSale.Sales.Products.Services;
+using PointOfSale.Sales.Promotions.Services;
 using PointOfSale.Shared.Settings;
 using PointOfSale.Users.Services;
 using System.Reflection;
@@ -52,6 +53,7 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IPromotionService, PromotionService>();
 
 builder.Services.AddScoped<AuthService>();
 

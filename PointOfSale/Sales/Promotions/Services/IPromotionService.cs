@@ -6,8 +6,8 @@ namespace PointOfSale.Sales.Promotions.Services
 {
     public interface IPromotionService
     {
-        Task<PromotionResponse> GetPromotionResponseById();
-        Task<Promotion> GetPromotionById();
+        Task<PromotionResponse?> GetPromotionResponseById(int id);
+        Task<Promotion?> GetPromotionById(int id);
 
         Task<List<PromotionResponse>> GetPromotionsResponse(GetPromotionsQueryParams queryParams);
 

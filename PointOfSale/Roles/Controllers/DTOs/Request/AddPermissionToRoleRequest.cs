@@ -2,9 +2,9 @@
 
 namespace PointOfSale.Roles.Controllers.DTOs.Request
 {
-    public class AddPermissionToRoleRequest
+    public record AddPermissionToRoleRequest
     {
         [Required]
-        public required HashSet<int> permissionsIDs { get; set; }
+        public required HashSet<int> permissionsIDs { get; init; }
     }
 }

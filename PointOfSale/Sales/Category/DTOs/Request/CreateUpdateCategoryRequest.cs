@@ -2,9 +2,9 @@
 
 namespace PointOfSale.Sales.Category.DTOs.Request
 {
-    public class CreateUpdateCategoryRequest
+    public record CreateUpdateCategoryRequest
     {
         [Required]
-        public String Name { get; set; } = null!;
+        public string Name { get; init; } = null!;
     }
 }

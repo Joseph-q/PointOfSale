@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PointOfSale.Sales.Category.DTOs.Request
+namespace PointOfSale.Sales.Promotions.DTOs.Request
 {
-    public record AssignProductsToCategoryRequest
+    public record AssignProductsToPromotionRequest
     {
         [Required(ErrorMessage = "ProductsIDs cannot be null or empty.")]
         [MinLength(1, ErrorMessage = "At least one ProductID must be provided.")]

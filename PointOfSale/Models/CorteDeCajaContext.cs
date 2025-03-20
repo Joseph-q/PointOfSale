@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace PointOfSale.Models;
 
@@ -11,15 +13,6 @@ public partial class CorteDeCajaContext : DbContext
     public CorteDeCajaContext(DbContextOptions<CorteDeCajaContext> options)
         : base(options)
     {
-        try
-        {
-            Database.EnsureCreated();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error creando modelos en la base de datos", ex);
-        }
-
     }
 
     public virtual DbSet<Permission> Permissions { get; set; }
@@ -37,6 +30,10 @@ public partial class CorteDeCajaContext : DbContext
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=localhost,1433;Database=CorteDeCaja;User Id=sa;Password=Pass1234;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -115,28 +112,37 @@ public partial class CorteDeCajaContext : DbContext
 
             entity.ToTable("promotions");
 
-            entity.HasIndex(e => e.ProductBarcode, "IX_promotions_product_barcode");
-
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.Description)
-                .HasMaxLength(70)
+                .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("description");
             entity.Property(e => e.Name)
-                .HasMaxLength(20)
+                .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("name");
             entity.Property(e => e.PorcentageDiscount).HasColumnName("porcentage_discount");
-            entity.Property(e => e.ProductBarcode)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("product_barcode");
 
-            entity.HasOne(d => d.ProductBarcodeNavigation).WithMany(p => p.Promotions)
-                .HasForeignKey(d => d.ProductBarcode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_product_barcode");
+            entity.HasMany(d => d.ProductBarcodes).WithMany(p => p.Promotions)
+                .UsingEntity<Dictionary<string, object>>(
+                    "PromotionDetail",
+                    r => r.HasOne<ProductsItem>().WithMany()
+                        .HasForeignKey("ProductBarcode")
+                        .HasConstraintName("FK__promotion__produ__2B0A656D"),
+                    l => l.HasOne<Promotion>().WithMany()
+                        .HasForeignKey("PromotionId")
+                        .HasConstraintName("FK__promotion__promo__2A164134"),
+                    j =>
+                    {
+                        j.HasKey("PromotionId", "ProductBarcode").HasName("PK__promotio__B19879B1CE0EFD26");
+                        j.ToTable("promotion_detail");
+                        j.IndexerProperty<int>("PromotionId").HasColumnName("promotion_id");
+                        j.IndexerProperty<string>("ProductBarcode")
+                            .HasMaxLength(50)
+                            .IsUnicode(false)
+                            .HasColumnName("product_barcode");
+                    });
         });
 
         modelBuilder.Entity<Purchase>(entity =>

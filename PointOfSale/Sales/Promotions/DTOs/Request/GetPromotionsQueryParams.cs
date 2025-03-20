@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace PointOfSale.Sales.Promotions.DTOs.Request
+﻿namespace PointOfSale.Sales.Promotions.DTOs.Request
 {
-    public class GetPromotionsQueryParams
+    public record GetPromotionsQueryParams
     {
-        [Required]
-        public bool Active { get; set; } = true;
+        public bool? Active { get; init; }
     }
 }

@@ -2,12 +2,12 @@
 
 namespace PointOfSale.Roles.Controllers.DTOs.Request
 {
-    public class UpdateRoleRequest
+    public record UpdateRoleRequest
     {
         [MaxLength(20)]
-        public string? Name { get; set; }
+        public string? Name { get; init; }
 
         [MaxLength(50)]
-        public string? Description { get; set; }
+        public string? Description { get; init; }
     }
 }

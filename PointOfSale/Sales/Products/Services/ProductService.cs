@@ -74,7 +74,6 @@ namespace PointOfSale.Sales.Products.Services
 
                 if (queryParams.PurchaseId != null && queryParams.PurchaseId > 0)
                 {
-
                     // TODO: this function is not implemented
                     // You have to find the products that have sell in the purchase
                     //chain = chain.Where(p => p.PurchaseDetails.Equals(queryParams.Purchase));

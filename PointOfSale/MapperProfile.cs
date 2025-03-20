@@ -5,6 +5,7 @@ using PointOfSale.Roles.Controllers.DTOs.Response;
 using PointOfSale.Sales.Category.DTOs.Request;
 using PointOfSale.Sales.Products.DTOs.Request;
 using PointOfSale.Sales.Products.DTOs.Response;
+using PointOfSale.Sales.Promotions.DTOs.Request;
 using PointOfSale.Users.Controllers.DTOs.Request;
 using PointOfSale.Users.Controllers.DTOs.Responses;
 
@@ -14,7 +15,7 @@ namespace PointOfSale
     {
         public MapperProfile()
         {
-            // User Mapping
+            // User MAPPING
 
             // Hashes the password before mapping it to the PasswordHash field.
             CreateMap<CreateUserRequest, User>()
@@ -35,7 +36,7 @@ namespace PointOfSale
 
             CreateMap<Role, UserRoleDTO>(); // Asegúrate de incluir esta línea
 
-            //Role Mapping
+            //Role MAPPING
             CreateMap<CreateRoleRequest, Role>();
 
             CreateMap<UpdateRoleRequest, Role>()
@@ -45,7 +46,7 @@ namespace PointOfSale
             CreateMap<Role, RoleDto>();
 
 
-            //Products Mapping
+            //Products MAPPING
             CreateMap<CreateProductItem, ProductsItem>();
             CreateMap<UpdateProductItem, ProductsItem>()
                 .ForMember(d => d.Name, o => o.MapFrom((s, d) => s.Name ?? d.Name)) // If the name in Update Product item is null, retun original name
@@ -55,8 +56,18 @@ namespace PointOfSale
                 ;
             CreateMap<ProductsItem, GetProductItemResponse>();
 
-            // Category Mapping
+            // Category MAPPING
             CreateMap<CreateUpdateCategoryRequest, ProductCategory>();
+
+
+            // Promotion MAPPING
+            CreateMap<CreatePromotionRequest, Promotion>();
+            CreateMap<UpdatePromotionRequest, Promotion>()
+            .ForMember(d => d.Name, o => o.MapFrom((s, d) => s.Name ?? d.Name))
+            .ForMember(d => d.PorcentageDiscount, o => o.MapFrom((s, d) => s.PorcentageDiscount ?? d.PorcentageDiscount))
+            .ForMember(d => d.Description, o => o.MapFrom((s, d) => s.Description ?? d.Description))
+            .ForMember(d => d.Active, o => o.MapFrom((s, d) => s.Active ?? d.Active));
+
 
         }
     }

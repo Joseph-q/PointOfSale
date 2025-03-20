@@ -2,15 +2,15 @@
 
 namespace PointOfSale.Roles.Controllers.DTOs.Request
 {
-    public class CreateRoleRequest
+    public record CreateRoleRequest
     {
         [Required]
         [MaxLength(20)]
-        public required string Name { get; set; }
+        public required string Name { get; init; }
 
         [Required]
         [MaxLength(50)]
-        public required string Description { get; set; }
+        public required string Description { get; init; }
     }
 
 }

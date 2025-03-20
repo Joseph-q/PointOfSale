@@ -2,11 +2,11 @@
 
 namespace PointOfSale.Auth.Controller.Request
 {
-    public class LoginRequestData
+    public record LoginRequestData
     {
         [Required]
-        public required string Username { get; set; }
+        public required string Username { get; init; }
         [Required]
-        public required string Password { get; set; }
+        public required string Password { get; init; }
     }
 }

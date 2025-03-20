@@ -1,11 +1,11 @@
 ﻿namespace PointOfSale.Users.Controllers.DTOs.Responses
 {
-    public class UserWithoutRolesDTO
+    public record UserWithoutRolesDTO
     {
-        public int Id { get; set; }
-        public required string Username { get; set; }
+        public int Id { get; init; }
+        public required string Username { get; init; }
 
-        public DateTime? CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; init; }
 
     }
 }
