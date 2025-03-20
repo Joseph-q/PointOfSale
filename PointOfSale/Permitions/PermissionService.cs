@@ -4,9 +4,9 @@ using PointOfSale.Permissions;
 
 namespace PointOfSale.Permitions
 {
-    public class PermissionService(CorteDeCajaContext context) : IPermissionService
+    public class PermissionService(SalesContext context) : IPermissionService
     {
-        private readonly CorteDeCajaContext _context = context;
+        private readonly SalesContext _context = context;
 
         public Task<List<Permission>> FindPermitionByIds(HashSet<int> permissionIDs)
         {

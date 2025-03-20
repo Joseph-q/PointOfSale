@@ -5,9 +5,9 @@ using PointOfSale.Sales.Promotions.DTOs.Response;
 
 namespace PointOfSale.Sales.Promotions.Services
 {
-    public class PromotionService(CorteDeCajaContext context) : IPromotionService
+    public class PromotionService(SalesContext context) : IPromotionService
     {
-        private readonly CorteDeCajaContext _context = context;
+        private readonly SalesContext _context = context;
         public Task CreatePromotion(Promotion promotion)
         {
             _context.Add(promotion);

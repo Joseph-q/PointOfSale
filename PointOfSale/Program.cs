@@ -20,7 +20,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 //Database
-builder.Services.AddDbContext<CorteDeCajaContext>(op => op
+builder.Services.AddDbContext<SalesContext>(op => op
     .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
     .EnableSensitiveDataLogging(builder.Environment.IsDevelopment()));
 

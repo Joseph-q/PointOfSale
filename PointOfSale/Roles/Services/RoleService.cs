@@ -7,9 +7,9 @@ using PointOfSale.Roles.Exceptions;
 
 namespace PointOfSale.Roles.Services
 {
-    public class RoleService(CorteDeCajaContext contex, IMapper mapper) : IRoleService
+    public class RoleService(SalesContext contex, IMapper mapper) : IRoleService
     {
-        private readonly CorteDeCajaContext _context = contex;
+        private readonly SalesContext _context = contex;
         private readonly IMapper _mapper = mapper;
 
         public async Task CreateRole(Role role)

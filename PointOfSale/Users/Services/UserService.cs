@@ -8,10 +8,10 @@ using PointOfSale.Users.Exeptions;
 
 namespace PointOfSale.Users.Services
 {
-    public class UserService(CorteDeCajaContext context, IMapper mapper) : IUserService
+    public class UserService(SalesContext context, IMapper mapper) : IUserService
     {
         private readonly IMapper _mapper = mapper;
-        private readonly CorteDeCajaContext _context = context;
+        private readonly SalesContext _context = context;
 
         public async Task CreateUser(CreateUserRequest user)
         {

@@ -5,9 +5,9 @@ using PointOfSale.Sales.Category.DTOs.Response;
 
 namespace PointOfSale.Sales.Category.Services
 {
-    public class CategoryService(CorteDeCajaContext context) : ICategoryService
+    public class CategoryService(SalesContext context) : ICategoryService
     {
-        private readonly CorteDeCajaContext _context = context;
+        private readonly SalesContext _context = context;
 
         public async Task AssignProductsToCategoryAsync(ProductCategory category, List<ProductsItem> productsToAssign)
         {

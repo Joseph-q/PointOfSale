@@ -8,7 +8,7 @@ namespace PointOfSale.Sales.Products.Services
 {
     public class ProductServiceTests
     {
-        private readonly Mock<CorteDeCajaContext> _contextDb = new Mock<CorteDeCajaContext>();
+        private readonly Mock<SalesContext> _contextDb = new Mock<SalesContext>();
         private readonly Mock<DbSet<ProductsItem>> _database = new Mock<DbSet<ProductsItem>>();
         private ProductService _service;
 

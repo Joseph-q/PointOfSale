@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace PointOfSale.Models;
 
-public partial class CorteDeCajaContext : DbContext
+public partial class SalesContext : DbContext
 {
-    public CorteDeCajaContext()
+    public SalesContext()
     {
     }
 
-    public CorteDeCajaContext(DbContextOptions<CorteDeCajaContext> options)
+    public SalesContext(DbContextOptions<SalesContext> options)
         : base(options)
     {
     }

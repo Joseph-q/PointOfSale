@@ -15,5 +15,9 @@ public partial class Promotion
 
     public bool Active { get; set; }
 
+    public DateTimeOffset? StartAt { get; set; }
+
+    public DateTimeOffset? EndAt { get; set; }
+
     public virtual ICollection<ProductsItem> ProductBarcodes { get; set; } = new List<ProductsItem>();
 }

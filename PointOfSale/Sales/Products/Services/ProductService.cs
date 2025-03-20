@@ -6,9 +6,9 @@ using PointOfSale.Sales.Products.DTOs.Response;
 
 namespace PointOfSale.Sales.Products.Services
 {
-    public class ProductService(CorteDeCajaContext context, IMapper _mapper) : IProductService
+    public class ProductService(SalesContext context, IMapper _mapper) : IProductService
     {
-        private readonly CorteDeCajaContext _context = context;
+        private readonly SalesContext _context = context;
 
         public Task<int> CreateProductItemAsync(CreateProductItem product)
         {

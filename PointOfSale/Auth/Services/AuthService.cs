@@ -11,10 +11,10 @@ using System.Text;
 
 namespace PointOfSale.Auth.Services
 {
-    public class AuthService(CorteDeCajaContext context, IOptions<JwtSettings> jwtSettings)
+    public class AuthService(SalesContext context, IOptions<JwtSettings> jwtSettings)
     {
 
-        private readonly CorteDeCajaContext _context = context;
+        private readonly SalesContext _context = context;
         private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
         //Authentication
