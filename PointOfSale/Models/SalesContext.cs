@@ -19,7 +19,6 @@ public partial class SalesContext : DbContext
         {
             Console.WriteLine("Error creando modelos en la base de datos", ex);
         }
-
     }
 
     public virtual DbSet<Permission> Permissions { get; set; }
@@ -122,11 +121,17 @@ public partial class SalesContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("description");
+            entity.Property(e => e.EndAt)
+                .HasPrecision(0)
+                .HasColumnName("endAt");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("name");
             entity.Property(e => e.PorcentageDiscount).HasColumnName("porcentage_discount");
+            entity.Property(e => e.StartAt)
+                .HasPrecision(0)
+                .HasColumnName("startAt");
 
             entity.HasMany(d => d.ProductBarcodes).WithMany(p => p.Promotions)
                 .UsingEntity<Dictionary<string, object>>(
@@ -172,7 +177,7 @@ public partial class SalesContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__purchase__3213E83FBB4C3768");
 
-            entity.ToTable("purchase_detail");
+            entity.ToTable("purchase_detail", tb => tb.HasTrigger("OnSellProduct"));
 
             entity.HasIndex(e => e.ProductBarcode, "IX_purchase_detail_product_barcode");
 

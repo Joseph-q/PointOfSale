@@ -48,6 +48,7 @@ namespace PointOfSale.Sales.Products.Services
         }
 
         public Task<List<ProductsItem>> GetProductsItemsByIDsAsync(string[] productsBarcode) => _context.ProductsItems.Where(p => productsBarcode.Contains(p.Barcode)).ToListAsync();
+
         public Task<List<ProductsItem>> GetProductsItemsByIDsAsync(string[] productsBarcode, CancellationToken cancellationToken) => _context.ProductsItems.Where(p => productsBarcode.Contains(p.Barcode)).ToListAsync(cancellationToken);
 
 
@@ -55,47 +56,45 @@ namespace PointOfSale.Sales.Products.Services
         {
             var chain = _context.ProductsItems.AsQueryable();
 
-            if (queryParams != null)
+            if (queryParams.CategoryId != null && queryParams.CategoryId > 0)
             {
-                if (queryParams.CategoryId != null && queryParams.CategoryId > 0)
-                {
-                    chain = chain.Where(p => p.Category.Id.Equals(queryParams.CategoryId));
-                }
+                chain = chain.Where(p => p.Category.Id.Equals(queryParams.CategoryId));
+            }
 
-                if (queryParams.Price != null)
-                {
-                    chain = chain.Where(p => p.Price.Equals(queryParams.Price));
-                }
+            if (queryParams.Price != null)
+            {
+                chain = chain.Where(p => p.Price.Equals(queryParams.Price));
+            }
 
-                if (queryParams.SupplierId != null && queryParams.SupplierId > 0)
-                {
-                    chain = chain.Where(p => p.SupplierId.Equals(queryParams.SupplierId));
-                }
+            if (queryParams.SupplierId != null && queryParams.SupplierId > 0)
+            {
+                chain = chain.Where(p => p.SupplierId.Equals(queryParams.SupplierId));
+            }
 
-                if (queryParams.PurchaseId != null && queryParams.PurchaseId > 0)
-                {
-                    // TODO: this function is not implemented
-                    // You have to find the products that have sell in the purchase
-                    //chain = chain.Where(p => p.PurchaseDetails.Equals(queryParams.Purchase));
-                }
+            if (queryParams.PurchaseId != null && queryParams.PurchaseId > 0)
+            {
+                // TODO: this function is not implemented
+                // You have to find the products that have sell in the purchase
+                //chain = chain.Where(p => p.PurchaseDetails.Equals(queryParams.Purchase));
+            }
 
-                if (!string.IsNullOrEmpty(queryParams.OrderBy))
+            if (!string.IsNullOrEmpty(queryParams.OrderBy))
+            {
+                if (queryParams.OrderDirection == "asc")
                 {
-                    if (queryParams.OrderDirection == "asc")
-                    {
-                        chain = chain.OrderBy(p => p.GetType().GetProperty(queryParams.OrderBy));
-                    }
-                    else
-                    {
-                        chain = chain.OrderByDescending(p => p.GetType().GetProperty(queryParams.OrderBy));
-                    }
+                    chain = chain.OrderBy(p => p.GetType().GetProperty(queryParams.OrderBy));
                 }
-
-                if (queryParams.Page.HasValue && queryParams.Limit.HasValue)
+                else
                 {
-                    chain = chain.Skip((queryParams.Page.Value - 1) * queryParams.Limit.Value).Take(queryParams.Limit.Value);
+                    chain = chain.OrderByDescending(p => p.GetType().GetProperty(queryParams.OrderBy));
                 }
             }
+
+            if (queryParams.Page.HasValue && queryParams.Limit.HasValue)
+            {
+                chain = chain.Skip((queryParams.Page.Value - 1) * queryParams.Limit.Value).Take(queryParams.Limit.Value);
+            }
+
 
             return chain.Select(p => new GetProductsResponse { Barcode = p.Barcode, Price = p.Price, Name = p.Name, Stock = p.Stock ?? 0 }).ToListAsync();
         }

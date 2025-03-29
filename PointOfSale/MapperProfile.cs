@@ -6,6 +6,7 @@ using PointOfSale.Sales.Category.DTOs.Request;
 using PointOfSale.Sales.Products.DTOs.Request;
 using PointOfSale.Sales.Products.DTOs.Response;
 using PointOfSale.Sales.Promotions.DTOs.Request;
+using PointOfSale.Sales.Purchases.DTOs.Request;
 using PointOfSale.Users.Controllers.DTOs.Request;
 using PointOfSale.Users.Controllers.DTOs.Responses;
 
@@ -67,6 +68,9 @@ namespace PointOfSale
             .ForMember(d => d.PorcentageDiscount, o => o.MapFrom((s, d) => s.PorcentageDiscount ?? d.PorcentageDiscount))
             .ForMember(d => d.Description, o => o.MapFrom((s, d) => s.Description ?? d.Description))
             .ForMember(d => d.Active, o => o.MapFrom((s, d) => s.Active ?? d.Active));
+
+            //PURCHASE MAPPING
+            CreateMap<ProductToSaleRequest, PurchaseDetail>();
 
 
         }

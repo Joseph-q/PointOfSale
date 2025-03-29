@@ -5,7 +5,11 @@ namespace PointOfSale.Roles.Exceptions
 {
     public class RoleNotFoundException : GlobalExceptionError
     {
-        public RoleNotFoundException(string? message = null) : base(HttpStatusCode.NotFound, message ?? "Role not found")
+        public RoleNotFoundException() : base(HttpStatusCode.NotFound, "Role not found")
+        {
+        }
+
+        public RoleNotFoundException(string message) : base(HttpStatusCode.NotFound, message)
         {
         }
     }

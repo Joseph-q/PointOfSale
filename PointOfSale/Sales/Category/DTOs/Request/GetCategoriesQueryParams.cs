@@ -12,7 +12,7 @@ namespace PointOfSale.Sales.Category.DTOs.Request
         [Range(5, 100, ErrorMessage = "Page must be between 5 an 100")]
         public int Limit { get; init; } = 20;
 
-        [ValidProperty(typeof(ProductCategory))]
+        [IsValidFromClass(typeof(ProductCategory))]
         [MaxLength(20, ErrorMessage = "OrderBy must be less than 20 characters.")]
         public string OrderBy { get; init; } = "Id";
 

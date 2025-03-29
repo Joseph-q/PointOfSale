@@ -4,15 +4,15 @@ using System.Reflection;
 namespace PointOfSale.Shared.Attributes
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class ValidPropertyAttribute : ValidationAttribute
+    public class IsValidFromClass : ValidationAttribute
     {
         private readonly Type _classType;
-        public ValidPropertyAttribute(Type type)
+        public IsValidFromClass(Type type)
         {
             _classType = type;
         }
 
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
         {
 
             if (value is string stringValue)

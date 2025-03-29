@@ -99,7 +99,6 @@ namespace PointOfSale.Sales.Products
 
             ProductsItem? p = await _productService.GetProductItemByBarCodeAsync(barcode);
 
-
             if (p == null)
             {
                 return NotFound("Product not found");

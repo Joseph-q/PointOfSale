@@ -12,6 +12,7 @@ using PointOfSale.Roles.Services;
 using PointOfSale.Sales.Category.Services;
 using PointOfSale.Sales.Products.Services;
 using PointOfSale.Sales.Promotions.Services;
+using PointOfSale.Sales.Purchases.Services;
 using PointOfSale.Shared.Settings;
 using PointOfSale.Users.Services;
 using System.Reflection;
@@ -54,6 +55,9 @@ builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
+builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+
+
 
 builder.Services.AddScoped<AuthService>();
 
@@ -62,7 +66,7 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddControllers(options =>
 {
     //Handling Errors
-    options.Filters.Add<ExceptionHandlingFilter>();
+    options.Filters.Add<CustomExceptionHandlerFilter>();
 });
 
 
@@ -79,7 +83,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Ingresa solo en token"
+        Description = "Ingresa solo el token"
     });
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
