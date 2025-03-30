@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
+using PointOfSale.Identity.Roles.DTOs.Request;
+using PointOfSale.Identity.Roles.DTOs.Response;
+using PointOfSale.Identity.Users.Controllers.DTOs.Request;
+using PointOfSale.Identity.Users.Controllers.DTOs.Responses;
 using PointOfSale.Models;
-using PointOfSale.Roles.Controllers.DTOs.Request;
-using PointOfSale.Roles.Controllers.DTOs.Response;
 using PointOfSale.Sales.Category.DTOs.Request;
 using PointOfSale.Sales.Products.DTOs.Request;
 using PointOfSale.Sales.Products.DTOs.Response;
 using PointOfSale.Sales.Promotions.DTOs.Request;
 using PointOfSale.Sales.Purchases.DTOs.Request;
-using PointOfSale.Users.Controllers.DTOs.Request;
-using PointOfSale.Users.Controllers.DTOs.Responses;
 
 namespace PointOfSale
 {
