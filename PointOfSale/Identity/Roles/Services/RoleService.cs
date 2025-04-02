@@ -2,8 +2,8 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PointOfSale.Identity.Roles.DTOs.Request;
+using PointOfSale.Identity.Roles.Exceptions;
 using PointOfSale.Models;
-using PointOfSale.Roles.Exceptions;
 
 namespace PointOfSale.Identity.Roles.Services
 {

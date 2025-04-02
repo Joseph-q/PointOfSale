@@ -1,6 +1,6 @@
 ﻿namespace PointOfSale.Identity.Users.Controllers.DTOs.Responses
 {
-    public record UserRoleDTO
+    public record UserRoleResponse
     {
         public int Id { get; init; }
         public required string Name { get; init; }

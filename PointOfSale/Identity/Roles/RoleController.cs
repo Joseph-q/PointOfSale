@@ -23,13 +23,13 @@ namespace PointOfSale.Identity.Roles
         private readonly IPermissionService _permissionService = permissionService;
 
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(SuccessResponseDto<List<RoleDto>>))]
+        [ProducesResponseType(200, Type = typeof(SuccessResponseDto<List<RoleResponse>>))]
         [PermissionPolicy(DefaultActions.Read, DefaultSubjects.Roles)]
         public async Task<IActionResult> GetRoles([FromQuery] GetRolesQueryParams queryParams)
         {
             List<Role> roles = await _roleService.GetRoles(queryParams);
 
-            var data = _mapper.Map<List<RoleDto>>(roles);
+            var data = _mapper.Map<List<RoleResponse>>(roles);
 
             SuccessResponseDto response = new() { Data = data };
 
@@ -37,7 +37,7 @@ namespace PointOfSale.Identity.Roles
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(SuccessResponseDto<RoleDto>))]
+        [ProducesResponseType(200, Type = typeof(SuccessResponseDto<RoleResponse>))]
         [PermissionPolicy(DefaultActions.Read, DefaultSubjects.Roles)]
         public async Task<IActionResult> GetRole(int id)
         {
@@ -51,7 +51,7 @@ namespace PointOfSale.Identity.Roles
                 return NotFound(response);
             }
 
-            var data = _mapper.Map<RoleDto>(role);
+            var data = _mapper.Map<RoleResponse>(role);
             response = new SuccessResponseDto { Data = data };
 
             return Ok(response);

@@ -1,155 +1,134 @@
 ﻿using AutoMapper;
-using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PointOfSale.Identity.Users.Controllers.DTOs.Request;
+using PointOfSale.Identity.Users.Controllers.DTOs.Responses;
+using PointOfSale.Identity.Users.Exceptions;
 using PointOfSale.Models;
-using PointOfSale.Roles.Exceptions;
-using PointOfSale.Users.Exeptions;
+using System.Linq.Expressions;
 
-namespace PointOfSale.Identity.Users.Services
+
+namespace PointOfSale.Identity.Users.Services;
+
+internal sealed partial class UserService(
+    SalesContext context,
+    UserManager<User> userManager,
+    IMapper mapper) : IUserService
 {
-    public class UserService(SalesContext context, IMapper mapper) : IUserService
+    public Task<bool> ExistsWithUsernameAndRoleAsync(string username, int roleId)
     {
-        private readonly IMapper _mapper = mapper;
-        private readonly SalesContext _context = context;
+        return context.Users.Where(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase) && u.Roles.Any(r => r.Id.Equals(roleId))).AnyAsync();
+    }
 
-        public async Task CreateUser(CreateUserRequest user)
-        {
-            var roleTask = _context.Roles.FirstOrDefaultAsync(r => r.Id == user.RoleId);
+    public Task<bool> ExistsWithEmailAsync(string email, int? exceptId = null)
+    {
+        return context.Users.Where(u => u.Username.Equals(email, StringComparison.OrdinalIgnoreCase) && u.Id != exceptId).AnyAsync();
+    }
 
-            User userToCreate = _mapper.Map<User>(user);
-
-            var role = await roleTask;
-            if (role == null)
-            {
-                throw new RoleNotFoundException();
-            }
-
-            userToCreate.Roles.Add(role);
-            _context.Add(userToCreate);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 2627)
-            {
-                throw new UserAlreadyExistException();
-            }
-            catch (DbUpdateException)
-            {
-                throw;
-            }
-        }
-
-        public Task<List<User>> GetUsers(GetUsersQueryParams queryParams)
-        {
-            int page = queryParams.Page;
-            int limit = queryParams.Limit;
-            int? roleId = queryParams.RoleId;
-            var chain = _context.Users.AsQueryable()
-                .Select(u => new User
-                {
-                    Id = u.Id,
-                    Username = u.Username,
-                    CreatedAt = u.CreatedAt,
-                });
-
-            if (roleId != null && roleId > 0)
-            {
-                chain = chain.Where(u => u.Roles.Any(role => role.Id == queryParams.RoleId));
-            }
-
-            return chain.Skip((page - 1) * limit).Take(limit)
-                .OrderBy(u => u.CreatedAt)
-                .ToListAsync();
-        }
+    public Task<List<User>> GetListByQueryParamsAsync(GetListUserQueryParams queryParams)
+    {
+        int page = queryParams.Page;
+        int limit = queryParams.Limit;
+        int? roleId = queryParams.RoleId;
 
 
-        // Versión que acepta solo el 'id'
-        public Task<User?> GetUserById(int id)
-        {
-            return _context.Users
-                .Where(u => u.Id == id)
-                .Select(u => new User
-                {
-                    Id = u.Id,
-                    CreatedAt = u.CreatedAt,
-                    Username = u.Username,
-                })
-                .FirstOrDefaultAsync();
-        }
-
-        // Versión que acepta tanto el 'id' como 'queryParams'
-        public Task<User?> GetUserById(int id, GetUserQueryParams queryParams)
-        {
-            var chain = _context.Users.AsQueryable().Select(u => new User
+        var chain = context.Users.AsQueryable()
+            .Select(u => new User
             {
                 Id = u.Id,
                 Username = u.Username,
                 CreatedAt = u.CreatedAt,
             });
 
-            int? roleLimit = queryParams.RoleLimit;
-
-            if (roleLimit != null && roleLimit > 0)
-            {
-                chain = chain.Select(u => new User
-                {
-                    Id = u.Id,
-                    Username = u.Username,
-                    Roles = u.Roles
-                        .Take((int)roleLimit)
-                        .Select(role => new Role
-                        {
-                            Id = role.Id,
-                            Name = role.Name,
-                            Description = role.Description
-                        })
-                        .ToList() // Convertir a lista de Role
-                });
-            }
-
-            return chain.FirstOrDefaultAsync(u => u.Id == id);
-        }
-
-
-        public async Task UpdateUser(User userDb, UpdateUserRequest userToUpdate)
+        if (roleId != null && roleId > 0)
         {
-            if (userToUpdate.RoleId != null)
-            {
-                var role = _context.Roles.FirstOrDefault(r => r.Id == userToUpdate.RoleId);
-                if (role != null)
-                {
-                    userDb.Roles.Clear();
-                    userDb.Roles.Add(role);
-                }
-            }
-
-            _mapper.Map(userToUpdate, userDb);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 2627)
-            {
-                throw new UserAlreadyExistException();
-            }
-            catch (DbUpdateException)
-            {
-                throw;
-            }
+            chain = chain.Where(u => u.Roles.Any(role => role.Id == queryParams.RoleId));
         }
 
+        return chain.Skip((page - 1) * limit).Take(limit)
+            .OrderBy(u => u.CreatedAt)
+            .ToListAsync();
+    }
+
+    public Task<int> CountAllAsync(CancellationToken cancellationToken)
+    {
+
+        return context.Users.AsNoTracking().CountAsync(cancellationToken);
+    }
+
+    public async Task<T> SelectByIdAsync<T>(int id, Expression<Func<User, T>> select)
+    {
+        T user = await context.Users
+         .AsNoTracking()
+         .Where(u => u.Id == id)
+         .Select(select)
+         .FirstOrDefaultAsync() ?? throw new UserNotFoundException();
+
+        return user;
+    }
+    public Task<List<UserDetailResponse>> GetListResponseByQueryParamsAsync(GetListUserQueryParams queryParams)
+    {
+        int page = queryParams.Page;
+        int limit = queryParams.Limit;
+        int? roleId = queryParams.RoleId;
 
 
+        var chain = context.Users.AsQueryable()
+            .Select(u => new User
+            {
+                Id = u.Id,
+                Username = u.Username,
+                CreatedAt = u.CreatedAt,
+            });
 
-        public async Task DeleteUser(User user)
+        if (roleId != null && roleId > 0)
         {
-            _context.Users.Remove(user);
-
-            await _context.SaveChangesAsync();
+            chain = chain.Where(u => u.Roles.Any(role => role.Id == queryParams.RoleId));
         }
+
+        return chain.Skip((page - 1) * limit).Take(limit)
+            .OrderBy(u => u.CreatedAt)
+            .Select(u => new UserDetailResponse { Username = u.Username, CreatedAt = u.CreatedAt, Id = u.Id })
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<int> RegisterAsync(CreateUserRequest user)
+    {
+        _ = ExistsWithUsernameAndRoleAsync(user.Username, user.RoleId) ?? throw new UserAlreadyExistException("User already exist with same rol and username");
+
+        if (user.Email is not null) _ = ExistsWithEmailAsync(user.Email) ?? throw new UserAlreadyExistException("User already exist whit that email");
+
+        User userToCreate = mapper.Map<User>(user);
+
+        userToCreate.Roles.Add(new Role { Id = user.RoleId });
+
+        context.Add(userToCreate);
+
+        return await context.SaveChangesAsync();
+    }
+
+    public async Task<int> UpdateAsync(int userId, UpdateUserRequest userToUpdate)
+    {
+        User user = await context.Users.Where(u => u.Id.Equals(userId)).FirstOrDefaultAsync() ?? throw new UserNotFoundException();
+
+        user = mapper.Map<User>(userToUpdate);
+
+        context.Update(user);
+
+
+        return await context.SaveChangesAsync();
+    }
+
+    public async Task<int> DeleteAsync(int userId)
+    {
+        User user = await context.Users.Where(u => u.Id.Equals(userId)).Select(u => new User { Id = u.Id }).FirstOrDefaultAsync() ?? throw new UserNotFoundException();
+
+        context.Remove(user);
+
+        return await context.SaveChangesAsync();
 
     }
+
 }
+

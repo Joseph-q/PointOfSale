@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -23,7 +24,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SalesContext>(op => op
     .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
     .EnableSensitiveDataLogging(builder.Environment.IsDevelopment()));
-
 
 // Autehntication
 var jwtSettings = builder.Configuration.GetSection("JWT");
@@ -55,6 +55,19 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+
+builder.Services.Configure<IdentityOptions>(op =>
+{
+    op.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    op.Lockout.MaxFailedAccessAttempts = 5;
+    op.Lockout.AllowedForNewUsers = true;
+
+    // User settings.
+    op.User.AllowedUserNameCharacters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    op.User.RequireUniqueEmail = false;
+
+});
 
 
 

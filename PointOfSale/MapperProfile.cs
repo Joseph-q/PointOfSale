@@ -33,9 +33,9 @@ namespace PointOfSale
                 .ForMember(d => d.Username, o => o.MapFrom((s, d) => s.Username ?? d.Username)); // If username is null, keep the current one
 
             // Maps the user's role from the roles list, using the first role if available.
-            CreateMap<User, UserDTO>();
+            CreateMap<User, UserDetailResponse>();
 
-            CreateMap<Role, UserRoleDTO>(); // Asegúrate de incluir esta línea
+            CreateMap<Role, UserRoleResponse>(); // Asegúrate de incluir esta línea
 
             //Role MAPPING
             CreateMap<CreateRoleRequest, Role>();
@@ -44,7 +44,7 @@ namespace PointOfSale
                 .ForMember(d => d.Name, o => o.MapFrom((s, d) => s.Name ?? d.Name))
                 .ForMember(d => d.Description, o => o.MapFrom((s, d) => s.Description ?? d.Description));
 
-            CreateMap<Role, RoleDto>();
+            CreateMap<Role, RoleResponse>();
 
 
             //Products MAPPING

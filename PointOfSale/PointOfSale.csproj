@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <Folder Include="Auth\Controller\Response\" />
+    <Folder Include="Migrations\" />
     <Folder Include="Sales\Purchases\DTOs\Response\" />
     <Folder Include="Sales\Purchases\Exeptions\" />
     <Folder Include="Sales\Suplier\" />

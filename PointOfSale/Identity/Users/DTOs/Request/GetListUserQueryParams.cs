@@ -2,7 +2,7 @@
 
 namespace PointOfSale.Identity.Users.Controllers.DTOs.Request
 {
-    public record GetUsersQueryParams
+    public record GetListUserQueryParams
     {
         [Range(1, int.MaxValue, ErrorMessage = "El número de página debe ser mayor o igual a 1.")]
         public int Page { get; init; } = 1;

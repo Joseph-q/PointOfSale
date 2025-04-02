@@ -1,12 +1,11 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PointOfSale.Auth.Atributtes;
 using PointOfSale.Auth.Constants;
 using PointOfSale.Identity.Users.Controllers.DTOs.Request;
 using PointOfSale.Identity.Users.Controllers.DTOs.Responses;
+using PointOfSale.Identity.Users.DTOs.Responses;
 using PointOfSale.Identity.Users.Services;
-using PointOfSale.Models;
 using PointOfSale.Shared.DTOs.Responses;
 
 namespace PointOfSale.Identity.Users
@@ -19,88 +18,70 @@ namespace PointOfSale.Identity.Users
     [Produces("application/json")]
     [ProducesResponseType(401)]
     [ProducesResponseType(404, Type = typeof(ErrorResponseDto))]
-    public class UserController(IUserService uservice, IMapper mapper) : ControllerBase
+    public class UserController(IUserService userService) : ControllerBase
     {
-        private readonly IUserService _userservice = uservice;
-        private readonly IMapper _mapper = mapper;
+
+        [ProducesResponseType(201)]
+        [HttpPost("register")]
+        [PermissionPolicy(DefaultActions.Create, DefaultSubjects.Users)]
+        public async Task<IActionResult> RegisterUser([FromBody] CreateUserRequest user)
+        {
+            await userService.RegisterAsync(user);
+            return Created();
+        }
 
 
         [HttpGet]
         [PermissionPolicy(DefaultActions.Read, DefaultSubjects.Users)]
-        [ProducesResponseType(200, Type = typeof(SuccessResponseDto<List<UserWithoutRolesDTO>>))]
-        public async Task<IActionResult> GetUsers([FromQuery] GetUsersQueryParams queryParams)
+        public async Task<IActionResult> GetUsers([FromQuery] GetListUserQueryParams queryParams)
         {
-            List<User> users = await _userservice.GetUsers(queryParams);
+            List<UserDetailResponse> users = await userService.GetListResponseByQueryParamsAsync(queryParams);
 
-            var data = _mapper.Map<List<UserDTO>>(users);
-            SuccessResponseDto response = new() { Data = data };
-
-            return Ok(response);
+            return Ok(users);
         }
 
-        [ProducesResponseType(200, Type = typeof(SuccessResponseDto<UserDTO>))]
         [HttpGet("{id}")]
         [PermissionPolicy(DefaultActions.Read, DefaultSubjects.Users)]
-        public async Task<IActionResult> GetUser(int id, [FromQuery] GetUserQueryParams queryParams)
+        public async Task<IActionResult> GetUser(int id)
         {
-            User? user = await _userservice.GetUserById(id, queryParams);
-            IResponse response;
+            UserDetailResponse user = await userService.SelectByIdAsync(id,
+                u => new UserDetailResponse
+                {
+                    Id = u.Id,
+                    Username = u.Username,
+                    CreatedAt = u.CreatedAt
+                });
 
-            if (user == null)
-            {
-                response = new ErrorResponseDto { Title = "Usuario no econtrado" };
-                return NotFound(response);
-            }
-
-            UserDTO data = _mapper.Map<UserDTO>(user);
-
-            response = new SuccessResponseDto { Data = data };
-
-            return Ok(response);
+            return Ok(user);
         }
 
-        [ProducesResponseType(201)]
-        [HttpPost]
-        [PermissionPolicy(DefaultActions.Create, DefaultSubjects.Users)]
-        public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest user)
-        {
-            await _userservice.CreateUser(user);
-            return Created();
-        }
 
-        [ProducesResponseType(204)]
         [HttpPut("{id}")]
         [PermissionPolicy(DefaultActions.Update, DefaultSubjects.Users)]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserRequest userToUpdate)
         {
-            User? userDb = await _userservice.GetUserById(id);
-
-            if (userDb == null)
-            {
-                return NotFound(new ErrorResponseDto { Title = "Usuario no econtrado" });
-            }
-
-            await _userservice.UpdateUser(userDb, userToUpdate);
+            await userService.UpdateAsync(id, userToUpdate);
             return NoContent();
         }
 
-        [ProducesResponseType(204)]
         [HttpDelete("{id}")]
         [PermissionPolicy(DefaultActions.Delete, DefaultSubjects.Users)]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            User? user = await _userservice.GetUserById(id);
-
-
-            if (user == null)
-            {
-                return NotFound(new ErrorResponseDto { Title = "Usuario no econtrado" });
-            }
-
-            await _userservice.DeleteUser(user);
-
+            await userService.DeleteAsync(id);
             return NoContent();
         }
+
+        [HttpGet("{userId}/permissions")]
+        [PermissionPolicy(DefaultActions.Read, DefaultSubjects.Permissions)]
+        public async Task<IActionResult> GetPermissions(string userId)
+        {
+            UserPermissionResponse userPermissions = await userService.GetPermissionsAsync(userId);
+
+            return Ok(userPermissions);
+        }
+
+
     }
 
 }
